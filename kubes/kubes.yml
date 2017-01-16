@@ -1,0 +1,27 @@
+---
+- hosts: kubes_nodes
+  remote_user: pirate
+  become: yes
+  become_user: root
+  handlers:
+    - name: restart chrony
+      service: name=chrony state=restarted
+      listen: "restart chrony service"
+
+  tasks:
+    - name: update cache and install chrony
+      apt:
+        name: chrony
+        state: latest
+        update_cache: yes
+        cache_valid_time: 3600
+    - name: template chrony.conf
+      template: src=templates/chrony.j2 dest=/etc/chrony/chrony.conf
+      notify: "restart chrony service"
+    - name: ensure chrony service is running
+      service:
+        name: chrony
+        state: started 
+    - name: set timezone to America/New_York
+      timezone:
+        name: America/New_York

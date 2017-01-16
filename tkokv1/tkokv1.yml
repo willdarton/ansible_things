@@ -1,6 +1,6 @@
 ---
-- hosts: kubes_nodes
-  remote_user: pirate
+- hosts: tkokv1.radagast.net
+  remote_user: pi
   become: yes
   become_user: root
   handlers:
@@ -22,3 +22,6 @@
       service:
         name: chrony
         state: started 
+    - name: set timezone to America/New_York
+      timezone:
+        name: America/New_York
