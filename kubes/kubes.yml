@@ -9,6 +9,22 @@
       listen: "restart chrony service"
 
   tasks:
+    - name: Configure kubernetes repository
+      apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        update_cache: yes
+    - name: Add GPG key for kubernetes
+      apt_key:
+        url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+        state: present
+    - name: Install kubeadm
+      apt:
+        name: kubeadm
+        state: latest
+        update_cache: yes
+        cache_valid_time: 3600
+ 
     - name: update cache and install chrony
       apt:
         name: chrony
@@ -25,3 +41,4 @@
     - name: set timezone to America/New_York
       timezone:
         name: America/New_York
+  
