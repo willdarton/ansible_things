@@ -1,0 +1,23 @@
+---
+#snow_record variables
+ 
+sn_username: 39453
+sn_password: 
+sn_instance: dev73039
+ 
+#data variables
+ 
+sn_severity: 2
+sn_priority: 2
+
+justification: "In order to meet Company Information Security and industry standards for server compliance"
+implementation_plan: "Apply errata per the normal schedule"
+risk: "Minimal risk to member services or internal systems"
+backout_plan: "Remove appled errata via pre-defined Ansible Scripts"
+test_plan: "Verified in lower environments via Release R123456"
+
+change_start_date: "2020-09-21 02:00:00"
+change_end_date: "2020-09-21 03:00:00"
+
+change_assignment_group: "SRE"
+task_assignment_group: "SRE"

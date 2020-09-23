@@ -1,0 +1,106 @@
+---
+- name: Create ticket with notes
+  hosts: localhost
+  gather_facts: no
+  connection: local
+
+  tasks:
+  - name: include vars
+    include_vars: change_request_vars.yml
+
+  - name: Create a change request
+    snow_record:
+      state: present
+      table: change_request
+      username: "{{ sn_username }}"
+      password: "{{ sn_password }}"
+      instance: "{{ sn_instance }}"
+      data:
+        severity: "{{ sn_severity }}"
+        priority: "{{ sn_priority }}"
+        short_description: "Red Hat Enterprise Linux - Monthly Security Errata Application"
+        start_date: "{{ change_start_date }}"
+        end_date: "{{ change_end_date }}"
+        assignment_group: "{{ change_assignment_group }}"
+        risk_impact_analysis: "{{ risk }}"
+        implementation_plan: "{{ implementation_plan }}"
+        justification: "{{ justification }}"
+        backout_plan: "{{ backout_plan }}"
+        test_plan: "{{ test_plan }}"
+    register: new_change
+
+  - name: Attach Apply Change Task to Change Request
+    snow_record:
+      state: present
+      table: change_task
+      username: "{{ sn_username }}"
+      password: "{{ sn_password }}"
+      instance: "{{ sn_instance }}"
+      data:
+        change_request: "{{ new_change.record.number }}"
+        change_task_type: "Implementation"
+        severity: "{{ sn_severity }}"
+        priority: "{{ sn_priority }}"
+        start_date: "{{ change_start_date }}"
+        end_date: "{{ change_end_date }}"
+        short_description: "Apply Red Hat Enterprise Linux Bugfix, Security and Enhancement Errata to all Vienna and Plano Production Servers"
+        assignment_group: "{{ task_assignment_group }}"
+    register: new_change_task
+   
+  - name: Attach Validate Change Task to Change Request
+    snow_record:
+      state: present
+      table: change_task
+      username: "{{ sn_username }}"
+      password: "{{ sn_password }}"
+      instance: "{{ sn_instance }}"
+      data:
+        change_request: "{{ new_change.record.number }}"
+        change_task_type: "Implementation"
+        severity: "{{ sn_severity }}"
+        priority: "{{ sn_priority }}"
+        start_date: "2020-09-30 06:00:00"
+        end_date: "2020-09-30 07:00:00"
+        short_description: "Validate Red Hat Enterprise Linux Bugfix, Security and Enhancement Errata to all Vienna and Plano Production Servers"
+        assignment_group: "{{ task_assignment_group }}"
+    register: new_change_task
+
+  - name: Attach Application Validation task
+    snow_record:
+      state: present
+      table: change_task
+      username: "{{ sn_username }}"
+      password: "{{ sn_password }}"
+      instance: "{{ sn_instance }}"
+      data:
+        change_request: "{{ new_change.record.number }}"
+        change_task_type: "Implementation"
+        severity: "{{ sn_severity }}"
+        priority: "{{ sn_priority }}"
+        start_date: "2020-09-30 06:00:00"
+        end_date: "2020-09-30 07:00:00"
+        short_description: "Validate Database Application after Red Hat Enterprise Linux Patching Application"
+        assignment_group: "Database"
+    register: new_change_task
+   
+  - name: Attach Reboot and Validate Change Task to Change Request
+    snow_record:
+      state: present
+      table: change_task
+      username: "{{ sn_username }}"
+      password: "{{ sn_password }}"
+      instance: "{{ sn_instance }}"
+      data:
+        change_request: "{{ new_change.record.number }}"
+        change_task_type: "Implementation"
+        severity: "{{ sn_severity }}"
+        priority: "{{ sn_priority }}"
+        start_date: "2020-09-30 06:00:00"
+        end_date: "2020-09-30 07:00:00"
+        short_description: "Restart and Validate Database Application after Red Hat Enterprise Linux Patching Application"
+        assignment_group: "Network"
+    register: new_change_task
+
+
+
+

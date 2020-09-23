@@ -1,0 +1,31 @@
+---
+- name: Create ticket with notes
+  hosts: localhost
+  gather_facts: no
+  connection: local
+
+  tasks:
+  - name: include vars
+    include_vars: change_request_vars.yml
+
+  - name: Create a change request
+    snow_record:
+      state: present
+      table: change_request
+      username: "{{ sn_username }}"
+      password: "{{ sn_password }}"
+      instance: "{{ sn_instance }}"
+      data:
+        severity: "{{ sn_severity }}"
+        priority: "{{ sn_priority }}"
+        short_description: "Red Hat Enterprise Linux - Monthly Security Errata Application"
+        start_date: "{{ change_start_date }}"
+        end_date: "{{ change_end_date }}"
+        assignment_group: "{{ change_assignment_group }}"
+        risk_impact_analysis: "{{ risk }}"
+        implementation_plan: "{{ implementation_plan }}"
+        justification: "{{ justification }}"
+        backout_plan: "{{ backout_plan }}"
+        test_plan: "{{ test_plan }}"
+    register: new_change
+
